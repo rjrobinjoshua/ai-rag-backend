@@ -1,100 +1,125 @@
-🚀 AI Backend — FastAPI + OpenAI
+# 🚀 AI Backend — FastAPI + OpenAI
 
-A lightweight, production-ready backend for LLM-powered applications
+A lightweight, production-ready backend for LLM-powered applications.
 
-<p align="center"> <img src="https://img.shields.io/badge/Python-3.11-blue?style=for-the-badge" /> <img src="https://img.shields.io/badge/FastAPI-🚀-009688?style=for-the-badge" /> <img src="https://img.shields.io/badge/OpenAI-API-412991?style=for-the-badge" /> <img src="https://img.shields.io/badge/Docker-ready-0db7ed?style=for-the-badge" /> <img src="https://img.shields.io/badge/Status-Active-success?style=for-the-badge" /> </p>
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.11-blue?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/FastAPI-🚀-009688?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/OpenAI-API-412991?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Docker-ready-0db7ed?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Status-Active-success?style=for-the-badge" />
+</p>
 
-A clean and structured backend that powers LLM features such as chat, embeddings, and RAG.
-Built during a 10-week AI Engineering roadmap.
+A clean and structured backend powering LLM features such as chat, embeddings, and (soon) RAG.  
+Part of a 10-week AI Engineering roadmap.
 
-📁 Project Structure
-- `api/` → FastAPI routes
-- `services/` → business logic
-- `core/` → config, constants
-- `models/` → request/response models
+---
 
-🛠️ Setup Instructions
-1️⃣ Create a Virtual Environment
+# 🛠️ Setup Instructions
+
+### **1️⃣ Create a Virtual Environment**
+```bash
 python3 -m venv venv
 source venv/bin/activate
+```
 
-2️⃣ Install Dependencies
+### **2️⃣ Install Dependencies**
+```bash
 pip install -r requirements.txt
+```
 
-3️⃣ Add Your OpenAI API Key
+### **3️⃣ Add Your OpenAI API Key**
 
-Create a .env file:
+Create a `.env` file in the project root:
 
+```
 OPENAI_API_KEY=your_key_here
 CHATGPT_MODEL=gpt-4.1-mini
+```
 
-▶️ Run the Server
+---
+
+# ▶️ Run the Server
+
+```bash
 uvicorn app.main:app --reload
+```
 
+The server will start at:
 
-Visit:
+```
+http://localhost:8000
+```
 
-GET http://localhost:8000/health
- → Health Check
+---
 
-POST http://localhost:8000/ask
- → Ask a question
+# 🔌 API Endpoints
 
-POST http://localhost:8000/embed
- → Generate embeddings
+### 🩺 **Health Check**
+**GET** `/health`
 
-🔌 API Endpoints
-🩺 Health Check
-GET /health
-
-
-Returns:
-
+Example response:
+```json
 { "status": "ok" }
+```
 
-💬 Ask the LLM
-POST /ask
+---
+
+### 💬 **Ask the LLM**
+**POST** `/ask`
+
+Request:
+```json
 {
   "question": "What is Docker?"
 }
+```
 
-🧠 Embeddings
-POST /embed
+---
+
+### 🧠 **Embeddings**
+**POST** `/embed`
+
+Request:
+```json
 {
   "text": "FastAPI is great."
 }
+```
 
-🧪 Testing
+---
 
-Add tests under:
+# 🧪 Testing (Upcoming)
 
+Place tests under:
+
+```
 tests/
-
+```
 
 Run them with:
 
+```bash
 pytest
+```
 
-🐳 Docker Support
+---
 
-Build:
+# 🐳 Docker Support (Upcoming)
 
+### Build:
+```bash
 docker build -t ai-backend .
+```
 
-
-Run:
-
+### Run:
+```bash
 docker run -p 8000:8000 ai-backend
+```
 
-📘 Notes
+---
 
-Designed to scale into a full RAG + Agents backend.
+# 🙌 Credits
 
-This project is Week 1 deliverable of a 10-week AI Engineering plan.
-
-Additional features coming: cost optimization, async, multi-model routing, agentic workflows.
-
-🙌 Credits
-
-Built by Robinjoshua Parthiban,
-as part of a disciplined journey toward becoming an AI Engineer.
+Built by **Robinjoshua Parthiban**,  
+as part of a disciplined journey toward becoming an **AI Engineer**.
