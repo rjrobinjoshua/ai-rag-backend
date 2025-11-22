@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from loguru import logger
 
 from app.core.config import get_settings
-from app.api import health
+from app.api.routes import health
 
 def create_app():
     settings = get_settings()
