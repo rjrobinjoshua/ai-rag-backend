@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from loguru import logger
 
 from app.core.config import get_settings
-from app.api.routes import health
+from app.api.routes import ask, health
 
 def create_app():
     settings = get_settings()
@@ -13,6 +13,7 @@ def create_app():
         debug=settings.debug
     )
     app.include_router(health.router)
+    app.include_router(ask.router)
     
     return app
 
