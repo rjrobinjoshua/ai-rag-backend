@@ -1,44 +1,20 @@
-![Python Version](https://img.shields.io/badge/Python-3.11-blue)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.109.0-009485?logo=fastapi)
-![OpenAI](https://img.shields.io/badge/OpenAI-API-orange?logo=openai)
-![Docker](https://img.shields.io/badge/Docker-ready-0db7ed?logo=docker)
-![License](https://img.shields.io/badge/License-MIT-green)
-![Status](https://img.shields.io/badge/Status-Active-success)
+🚀 AI Backend — FastAPI + OpenAI
 
+A lightweight, production-ready backend for LLM-powered applications
 
-A lightweight backend built with FastAPI, integrating OpenAI models with a clean, scalable architecture.
-Part of a structured 10-week AI Engineering Roadmap.
+<p align="center"> <img src="https://img.shields.io/badge/Python-3.11-blue?style=for-the-badge" /> <img src="https://img.shields.io/badge/FastAPI-🚀-009688?style=for-the-badge" /> <img src="https://img.shields.io/badge/OpenAI-API-412991?style=for-the-badge" /> <img src="https://img.shields.io/badge/Docker-ready-0db7ed?style=for-the-badge" /> <img src="https://img.shields.io/badge/Status-Active-success?style=for-the-badge" /> </p>
+
+A clean and structured backend that powers LLM features such as chat, embeddings, and RAG.
+Built during a 10-week AI Engineering roadmap.
 
 📁 Project Structure
-ai-backend/
-│
-├── app/
-│   ├── api/
-│   │   └── routes/
-│   │       ├── health.py
-│   │       ├── ask.py
-│   │       └── embed.py
-│   │
-│   ├── services/
-│   │   └── openai_service.py
-│   │
-│   ├── core/
-│   │   ├── config.py
-│   │   └── logging.py
-│   │
-│   ├── models/
-│   │   ├── ask_request.py
-│   │   └── ask_response.py
-│   │
-│   └── main.py
-│
-├── tests/
-├── requirements.txt
-├── .env
-└── README.md
+- `api/` → FastAPI routes
+- `services/` → business logic
+- `core/` → config, constants
+- `models/` → request/response models
 
-⚙️ Setup Instructions
-1️⃣ Create & Activate Virtual Environment
+🛠️ Setup Instructions
+1️⃣ Create a Virtual Environment
 python3 -m venv venv
 source venv/bin/activate
 
@@ -47,87 +23,78 @@ pip install -r requirements.txt
 
 3️⃣ Add Your OpenAI API Key
 
-Create .env:
+Create a .env file:
 
-OPENAI_API_KEY=your_openai_api_key_here
-
-
-Get your key from:
-https://platform.openai.com/api-keys
+OPENAI_API_KEY=your_key_here
+CHATGPT_MODEL=gpt-4.1-mini
 
 ▶️ Run the Server
-
-From project root:
-
 uvicorn app.main:app --reload
 
 
-Server starts at:
+Visit:
 
-http://localhost:8000
+GET http://localhost:8000/health
+ → Health Check
 
-📡 Available Endpoints
-Health Check
+POST http://localhost:8000/ask
+ → Ask a question
+
+POST http://localhost:8000/embed
+ → Generate embeddings
+
+🔌 API Endpoints
+🩺 Health Check
 GET /health
 
 
-Example Response:
+Returns:
 
 { "status": "ok" }
 
-Ask a Question
+💬 Ask the LLM
 POST /ask
-
-
-Body:
-
 {
   "question": "What is Docker?"
 }
 
-
-Returns an LLM-generated answer.
-
-Generate Embeddings
+🧠 Embeddings
 POST /embed
-
-
-Body:
-
 {
-  "text": "Sample text"
+  "text": "FastAPI is great."
 }
 
+🧪 Testing
 
-Returns embedding vector using OpenAI embedding model.
-
-🧪 Testing (upcoming)
-
-Test files are placed under:
+Add tests under:
 
 tests/
 
 
-Run tests:
+Run them with:
 
 pytest
 
-🐳 Docker (upcoming)
+🐳 Docker Support
 
-A full Dockerfile and production Compose setup will be added as part of Week 1 (Weekend Task) in the roadmap.
+Build:
+
+docker build -t ai-backend .
+
+
+Run:
+
+docker run -p 8000:8000 ai-backend
 
 📘 Notes
 
-This backend is the foundation for:
+Designed to scale into a full RAG + Agents backend.
 
-RAG system
+This project is Week 1 deliverable of a 10-week AI Engineering plan.
 
-Observability + Eval Suite
+Additional features coming: cost optimization, async, multi-model routing, agentic workflows.
 
-Cost & Latency optimizations
+🙌 Credits
 
-Agentic AI
-
-Slack Bot Integration
-
-…all built in the next 10 weeks.
+Built by Robinjoshua Parthiban,
+as part of a disciplined journey toward becoming an AI Engineer.
