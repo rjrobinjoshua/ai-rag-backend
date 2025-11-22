@@ -14,6 +14,36 @@ A clean and structured backend powering LLM features such as chat, embeddings, a
 Part of a 10-week AI Engineering roadmap.
 
 ---
+## ✨ Features
+
+- **FastAPI backend** with clean modular structure  
+  (`api/`, `services/`, `core/`, `models/`)
+
+- **LLM Chat Endpoint (`/ask`)**  
+  Uses OpenAI GPT-4.1-mini (configurable).
+
+- **Embeddings Endpoint (`/embed`)**  
+  Ready for RAG ingestion + semantic search.
+
+- **Environment-based configuration**  
+  `.env` for API keys + model selection.  
+  Cached with `lru_cache` for performance.
+
+- **Pydantic request/response models**  
+  Auto-documented via Swagger & ReDoc.
+
+- **Error-handling middleware (extendable)**  
+  Centralized place for logging + exceptions.
+
+- **Loguru logging**  
+  Clean, timestamped logs during development.
+
+- **Docker support**  
+  Build + run with production settings.
+
+- **Auto-generated API Documentation**  
+  - Swagger → `/docs`  
+  - ReDoc → `/redoc`
 
 # 🛠️ Setup Instructions
 
@@ -53,41 +83,14 @@ http://localhost:8000
 
 ---
 
-# 🔌 API Endpoints
+## 🔌 API Overview
 
-### 🩺 **Health Check**
-**GET** `/health`
+The full interactive API docs are available when the server is running:
 
-Example response:
-```json
-{ "status": "ok" }
-```
+- Swagger UI: `http://localhost:8000/docs`
+- ReDoc: `http://localhost:8000/redoc`
+- OpenAPI schema: `http://localhost:8000/openapi.json`
 
----
-
-### 💬 **Ask the LLM**
-**POST** `/ask`
-
-Request:
-```json
-{
-  "question": "What is Docker?"
-}
-```
-
----
-
-### 🧠 **Embeddings**
-**POST** `/embed`
-
-Request:
-```json
-{
-  "text": "FastAPI is great."
-}
-```
-
----
 
 # 🧪 Testing (Upcoming)
 
