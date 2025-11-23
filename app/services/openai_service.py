@@ -7,7 +7,7 @@ EMBEDDING_MODEL = 'text-embedding-3-small'
 settings = get_settings()
 client = OpenAI(api_key=settings.api_key)
 
-def ask_llm(user_prompt: str) -> str:
+async def ask_llm(user_prompt: str) -> str:
     openai_response = client.chat.completions.create(
         model=settings.chatgpt_model,
         messages=[
