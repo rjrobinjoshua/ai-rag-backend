@@ -8,8 +8,8 @@ def setup_logging():
     logger.add(
         sys.stdout,
         format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | "
-               "<cyan>{level}</cyan> | "
-               "<yellow>{message}</yellow>",
+        "<cyan>{level}</cyan> | "
+        "<yellow>{message}</yellow>",
         level="INFO",
         enqueue=True,  # thread/process safe
     )

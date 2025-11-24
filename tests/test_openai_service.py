@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import MagicMock, patch
 
-from app.services.openai_service import ask_llm, embed_text
+from app.services.openai_service import ask_llm, embed_text, stream_chat_llm
 
 
 @pytest.mark.asyncio
@@ -43,3 +43,24 @@ async def test_embed_text_uses_openai_client(mock_client):
     mock_client.embeddings.create.assert_called_once()
     kwargs = mock_client.embeddings.create.call_args.kwargs
     assert kwargs["input"] == "hello world"
+
+
+@pytest.mark.asyncio
+@patch("app.services.openai_service.client")
+async def test_stream_chat_llm(mock_client):
+    # Fake streamed chunks
+    chunk1 = MagicMock()
+    chunk1.choices = [MagicMock(delta=MagicMock(content="Hello"))]
+
+    chunk2 = MagicMock()
+    chunk2.choices = [MagicMock(delta=MagicMock(content=" world"))]
+
+    # Make the mock client iterable (stream=True)
+    mock_client.chat.completions.create.return_value = iter([chunk1, chunk2])
+
+    result = []
+    async for token in stream_chat_llm("hi"):
+        result.append(token)
+
+    assert result == ["Hello", " world"]
+    mock_client.chat.completions.create.assert_called_once()

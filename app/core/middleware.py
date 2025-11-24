@@ -7,7 +7,7 @@ from loguru import logger
 
 
 def setup_middleware(app: FastAPI):
-    
+
     @app.middleware("http")
     async def log_requests(request: Request, call_next):
         start = time()
