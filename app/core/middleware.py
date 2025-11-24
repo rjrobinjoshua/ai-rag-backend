@@ -1,9 +1,10 @@
 from time import time
+
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-from starlette.exceptions import HTTPException as StarletteHTTPException
 from loguru import logger
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 
 def setup_middleware(app: FastAPI):
@@ -38,7 +39,7 @@ def setup_middleware(app: FastAPI):
                     "errors": validation_exc.errors(),
                 },
             )
-        except Exception as exc:
+        except Exception:
             # Catch any unhandled exception, log it once, return clean 500
             process_time = (time() - start) * 1000
             logger.exception(

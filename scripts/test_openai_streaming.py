@@ -1,7 +1,7 @@
-from dotenv import load_dotenv
 import os
 import sys
 
+from dotenv import load_dotenv
 from openai import OpenAI
 
 user_prompt = "Give me 5 ideas for weekend activities in Berlin."

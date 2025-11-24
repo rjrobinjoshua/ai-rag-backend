@@ -1,12 +1,7 @@
-import os
-from dotenv import load_dotenv
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 
-
-from app.models.ask import AskRequest
-from app.models.ask import AskResponse
+from app.models.ask import AskRequest, AskResponse
 from app.services import openai_service
-
 
 router = APIRouter(tags=["openai"])
 

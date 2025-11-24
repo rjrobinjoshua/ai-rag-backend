@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from loguru import logger
 
-from app.core.config import get_settings
 from app.api.routes import ask, embed, health, stream_chat
+from app.core.config import get_settings
 from app.core.logger import setup_logging
 from app.core.middleware import setup_middleware
 

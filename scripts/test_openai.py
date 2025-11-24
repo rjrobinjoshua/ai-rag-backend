@@ -1,6 +1,6 @@
-from dotenv import load_dotenv
 import os
 
+from dotenv import load_dotenv
 from openai import OpenAI
 
 user_prompt = "Hello Open AI, what is your model name?"

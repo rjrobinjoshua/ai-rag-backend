@@ -3,7 +3,6 @@ from fastapi import APIRouter
 from app.models.embed import EmbedRequest, EmbedResponse
 from app.services import openai_service
 
-
 router = APIRouter(tags=["embeddings"])
 
 

@@ -1,0 +1,18 @@
+[tool.black]
+line-length = 88
+target-version = ["py311"]
+
+[tool.ruff]
+line-length = 88
+select = ["E", "F", "W", "I"]  # I = import sorting
+ignore = []
+
+# Ruff will auto-fix issues (like unused imports, formatting, etc.)
+fix = true
+
+# Exclude virtual environments and cache folders
+exclude = [
+    "venv",
+    ".venv",
+    "__pycache__",
+]

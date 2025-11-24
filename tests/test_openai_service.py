@@ -1,5 +1,6 @@
-import pytest
 from unittest.mock import MagicMock, patch
+
+import pytest
 
 from app.services.openai_service import ask_llm, embed_text, stream_chat_llm
 
