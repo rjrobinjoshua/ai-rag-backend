@@ -1,0 +1,37 @@
+repos:
+  # 1) Black – code formatter
+  - repo: https://github.com/psf/black
+    rev: 24.8.0 # use a tagged release
+    hooks:
+      - id: black
+        language_version: python3.11
+
+  # 2) Ruff – linter + import sorter + autofix
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.6.3 # use a tagged release
+    hooks:
+      - id: ruff
+        args: ["--fix"] # auto-fix what it can
+
+  # 3) basic whitespace / EOF hygiene
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+  # 4) Local hook to forbid committing .env files
+  - repo: local
+    hooks:
+      - id: forbid-env-files
+        name: "Block committing .env files"
+        language: system
+        pass_filenames: false
+        entry: |
+          bash -c '
+            if git diff --cached --name-only | grep -qE "^\.env(\..*)?$"; then
+              echo "❌ ERROR: .env files must not be committed."
+              echo "   Remove them from the index:  git rm --cached .env"
+              exit 1
+            fi
+            exit 0
+          '
