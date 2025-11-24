@@ -92,7 +92,7 @@ The full interactive API docs are available when the server is running:
 - OpenAPI schema: `http://localhost:8000/openapi.json`
 
 
-# 🧪 Testing (Upcoming)
+# 🧪 Testing
 
 Place tests under:
 
@@ -108,7 +108,7 @@ pytest
 
 ---
 
-# 🐳 Docker Support (Upcoming)
+# 🐳 Docker Support
 
 ### Build:
 ```bash
@@ -117,7 +117,7 @@ docker build -t ai-backend .
 
 ### Run:
 ```bash
-docker run -p 8000:8000 ai-backend
+docker run --rm --env-file .env -p 8000:8000 ai-rag-backend
 ```
 
 ---

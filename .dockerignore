@@ -1,0 +1,23 @@
+# Python cache / build artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+*.log
+
+# Virtual environments
+venv/
+.env/
+.env.* 
+
+# Git & IDE metadata
+.git
+.gitignore
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Tests (not needed in runtime image)
+tests/
