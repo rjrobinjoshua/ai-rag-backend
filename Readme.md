@@ -112,7 +112,7 @@ pytest
 
 ### Build:
 ```bash
-docker build -t ai-backend .
+docker build -t ai-rag-backend .
 ```
 
 ### Run:
