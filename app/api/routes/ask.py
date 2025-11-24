@@ -3,8 +3,8 @@ from dotenv import load_dotenv
 from fastapi import APIRouter, HTTPException
 
 
-from app.models.ask_request import AskRequest
-from app.models.ask_response import AskResponse
+from app.models.ask import AskRequest
+from app.models.ask import AskResponse
 from app.services import openai_service
 
 
