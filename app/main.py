@@ -13,9 +13,8 @@ settings = get_settings()
 def create_app():
     setup_logging()
     logger.info(
-        "Starting application: {} in port {}",
+        "Starting application: {}",
         settings.app_name, 
-        settings.port
     )
 
     app = FastAPI(
@@ -38,6 +37,6 @@ if __name__ == "__main__":
     uvicorn.run(
         "app.main:app",
         host="0.0.0.0",
-        port=settings.port,
+        port=8000,
         reload=True
     )

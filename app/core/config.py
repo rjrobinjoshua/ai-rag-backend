@@ -10,7 +10,6 @@ load_dotenv()
 
 class Settings(BaseModel):
     app_name: str = os.getenv("APP_NAME", "default_ai_backend")
-    port: int = os.getenv("PORT", 8000)
     env: str = os.getenv("APP_ENV", "default_local")
     debug: bool = os.getenv("DEBUG", "false").lower() == "true"
     api_key: str = os.getenv("OPENAI_API_KEY")
