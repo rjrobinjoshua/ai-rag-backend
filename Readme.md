@@ -67,6 +67,26 @@ OPENAI_API_KEY=your_key_here
 CHATGPT_MODEL=gpt-4.1-mini
 ```
 
+### **4️⃣ (Recommended) Enable Pre-Commit Hooks**
+
+Install pre-commit:
+```bash
+pip install pre-commit
+```
+
+Install the pre-commit hooks:
+```bash
+pre-commit install
+```
+This enables:
+* Black formatting
+
+* Ruff linting & autofix
+
+* Test suite execution
+
+* Protection against committing .env files
+
 ---
 
 # ▶️ Run the Server
