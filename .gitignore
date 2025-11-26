@@ -9,3 +9,6 @@ venv/
 
 # OS files
 .DS_Store
+
+#vector DB
+chroma_db/
