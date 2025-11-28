@@ -35,11 +35,9 @@ async def ingest_file(
     if not os.path.exists(file_path):
         raise FileNotFoundError(f"File not found: {file_path}")
 
-    # 1) Read file
     with open(file_path, "r", encoding="utf-8") as f:
         text = f.read()
 
-    # 2) Chunk
     chunks = chunk_text(text, chunk_size=chunk_size, chunk_overlap=chunk_overlap)
     if not chunks:
         print("No chunks generated. Nothing to ingest.")
@@ -47,15 +45,12 @@ async def ingest_file(
 
     print(f"Read {len(text.split())} words → {len(chunks)} chunks")
 
-    # 3) Embed
     embeddings = await embed_chunks(chunks)
     print(f"Generated {len(embeddings)} embeddings")
 
-    # 4) Store in Chroma
     client = get_chroma_client()
     collection = client.get_or_create_collection(name=collection_name)
 
-    # Build IDs and metadata
     ids = [f"{os.path.basename(file_path)}_{i}" for i in range(len(chunks))]
     metadatas = [{"source": file_path, "chunk_index": i} for i in range(len(chunks))]
 

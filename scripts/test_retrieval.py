@@ -10,9 +10,9 @@ async def main():
     print("\nTop Chunks:")
     for idx, c in enumerate(chunks):
         print(f"\n--- Chunk #{idx} ---")
-        print("Score:", c["distance"])
-        print("Text:", c["chunk"])
-        print("Meta:", c["metadata"])
+        print("Score:", c.score)
+        print("Text:", c.text)
+        print("Meta:", c.metadata)
 
 
 if __name__ == "__main__":

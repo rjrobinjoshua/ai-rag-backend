@@ -6,15 +6,6 @@ def chunk_text(
     chunk_size: int = 200,  # roughly “words per chunk”
     chunk_overlap: int = 40,  # how many words overlap between chunks
 ) -> List[str]:
-    """
-    Split text into overlapping chunks based on word count.
-
-    This is a simple, token-agnostic chunker:
-    - Splits on whitespace.
-    - Builds chunks of `chunk_size` words.
-    - Overlaps chunks by `chunk_overlap` words to preserve context.
-    """
-
     if chunk_size <= 0:
         raise ValueError("chunk_size must be > 0")
 
