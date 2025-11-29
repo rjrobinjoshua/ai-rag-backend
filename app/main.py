@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from loguru import logger
 
-from app.api.routes import ask, embed, health, stream_chat
+from app.api.routes import ask, embed, health, rag_query, stream_chat
 from app.core.config import get_settings
 from app.core.logger import setup_logging
 from app.core.middleware import setup_middleware
@@ -23,6 +23,7 @@ def create_app():
     app.include_router(ask.router)
     app.include_router(embed.router)
     app.include_router(stream_chat.router)
+    app.include_router(rag_query.router)
 
     return app
 
