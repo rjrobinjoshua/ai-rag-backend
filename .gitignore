@@ -12,3 +12,6 @@ venv/
 
 #vector DB
 chroma_db/
+
+#test files
+*_Ignore.pdf

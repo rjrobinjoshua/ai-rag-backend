@@ -6,6 +6,7 @@ from typing import List
 import chromadb
 
 from app.core.chunking import chunk_text
+from app.core.doc_loader import load_document
 from app.services.openai_service import embed_text
 
 CHROMA_DB_DIR = "chroma_db"
@@ -51,8 +52,7 @@ async def ingest_file(
 
     collection = client.get_or_create_collection(name=collection_name)
 
-    with open(file_path, "r", encoding="utf-8") as f:
-        text = f.read()
+    text = load_document(file_path)
 
     chunks = chunk_text(text, chunk_size=chunk_size, chunk_overlap=chunk_overlap)
     if not chunks:
