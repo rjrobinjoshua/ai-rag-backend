@@ -17,34 +17,60 @@ Part of a 10-week AI Engineering roadmap.
 
 ## ✨ Features
 
-* **FastAPI backend** with clean modular structure
+### 🚀 Core Backend
+- **FastAPI backend** with a clean, modular structure
   (`api/`, `services/`, `core/`, `models/`)
+- **Environment-driven configuration**
+  Loads from `.env` with caching for performance.
+- **Structured logging with Loguru**
+  Consistent, timestamped logs for debugging and observability.
+- **Error-handling & request-logging middleware**
+  Centralized place for tracing, exceptions, and diagnostics.
 
-* **LLM Chat Endpoint (`/ask`)**
-  Uses OpenAI GPT-4.1-mini (configurable).
+### 💬 LLM Capabilities
+- **Chat endpoint (`/ask`)**
+  Powered by OpenAI (configurable model).
+- **Streaming chat endpoint (`/stream`)**
+  Real-time token streaming support.
+- **Embeddings endpoint (`/embed`)**
+  Generates vector embeddings for RAG workflows.
 
-* **Embeddings Endpoint (`/embed`)**
-  Ready for RAG ingestion + semantic search.
+### 📚 Retrieval-Augmented Generation (RAG)
+- **Ingestion pipeline (`scripts/ingest.py`)**
+  - Chunking
+  - Embedding
+  - Storing into ChromaDB
+- **Persistent ChromaDB vector store**
+  Lives in `chroma_db/` with auto-created collections.
+- **RAG Query endpoint (`/rag-query`)**
+  - Top-k retrieval
+  - Context construction
+  - LLM synthesis
+  - Source citations
 
-* **Environment-based configuration**
-  `.env` for API keys + model selection.
-  Cached with `lru_cache` for performance.
+### 📄 Document Handling
+- **Multi-format document loader**
+  Supports `.txt` and `.pdf` (via `pypdf`).
+- **Text cleaning & preprocessing**
+  Normalizes newlines, collapses whitespace, fixes formatting.
+- **Ready for real-world ingestion**
+  Works with messy, multi-page PDFs.
 
-* **Pydantic request/response models**
-  Auto-documented via Swagger & ReDoc.
+### 🧪 Testing
+- **pytest test suite**
+  - API tests
+  - Service tests
+  - Retrieval tests
+  - RAG logic tests
+- **Mock/OpenAI stubs** for offline testing.
 
-* **Error-handling middleware (extendable)**
-  Centralized place for logging + exceptions.
+### 🐳 Deployment
+- **Docker support**
+  Production-ready image build.
+- **FastAPI auto-generated documentation**
+  - Swagger UI → `/docs`
+  - ReDoc → `/redoc`
 
-* **Loguru logging**
-  Clean, timestamped logs during development.
-
-* **Docker support**
-  Build + run with production settings.
-
-* **Auto-generated API Documentation**
-  * Swagger → `/docs`
-  * ReDoc → `/redoc`
 
 # 🛠️ Setup Instructions
 
