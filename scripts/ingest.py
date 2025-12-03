@@ -5,7 +5,7 @@ from typing import List
 
 import chromadb
 
-from app.core.chunking import chunk_text
+from app.core.chunking import chunk_text, semantic_chunk_text_with_overlap
 from app.core.doc_loader import load_document
 from app.services.openai_service import embed_text
 
@@ -41,6 +41,7 @@ async def ingest_file(
     chunk_size: int = 200,
     chunk_overlap: int = 40,
     reset: bool = False,
+    mode: str = "fixed",
 ):
     if not os.path.exists(file_path):
         raise FileNotFoundError(f"File not found: {file_path}")
@@ -54,7 +55,17 @@ async def ingest_file(
 
     text = load_document(file_path)
 
-    chunks = chunk_text(text, chunk_size=chunk_size, chunk_overlap=chunk_overlap)
+    if mode == "fixed":
+        chunks = chunk_text(text, chunk_size=chunk_size, chunk_overlap=chunk_overlap)
+    elif mode == "semantic":
+        chunks = semantic_chunk_text_with_overlap(
+            text=text,
+            max_chunk_words=chunk_size,
+            overlap_words=chunk_overlap,
+        )
+    else:
+        raise ValueError(f"Unsupported mode: {mode}")
+
     if not chunks:
         print("No chunks generated. Nothing to ingest.")
         return
@@ -108,6 +119,12 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Delete existing collection before ingesting",
     )
+    parser.add_argument(
+        "--mode",
+        choices=["fixed", "semantic"],
+        default="fixed",
+        help="Chunking mode: 'fixed' or 'semantic' (default: fixed).",
+    )
     return parser.parse_args()
 
 
@@ -120,5 +137,6 @@ if __name__ == "__main__":
             chunk_size=args.chunk_size,
             chunk_overlap=args.chunk_overlap,
             reset=args.reset,
+            mode=args.mode,
         )
     )

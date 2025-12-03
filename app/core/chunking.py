@@ -1,4 +1,41 @@
+import re
 from typing import List
+
+
+def semantic_chunk_text_with_overlap(
+    text: str,
+    max_chunk_words: int = 300,
+    overlap_words: int = 50,
+) -> List[str]:
+    paragraphs = [p.strip() for p in re.split(r"\n\s*\n", text) if p.strip()]
+
+    chunks: List[str] = []
+    current_words: List[str] = []
+    current_word_count = 0
+
+    for paragraph in paragraphs:
+        words = paragraph.split()
+        if not words:
+            continue
+
+        if current_word_count + len(words) > max_chunk_words and current_words:
+            chunks.append(" ".join(current_words))
+
+            if overlap_words > 0:
+                overlap_slice = current_words[-overlap_words:]
+                current_words = overlap_slice + words
+                current_word_count = len(current_words)
+            else:
+                current_words = words
+                current_word_count = len(words)
+        else:
+            current_words.extend(words)
+            current_word_count += len(words)
+
+    if current_words:
+        chunks.append(" ".join(current_words))
+
+    return chunks
 
 
 def chunk_text(
