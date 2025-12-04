@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from app.core.doc_loader import clean_text, load_document
+from app.core.doc_loader import clean_text, load_document, load_document_pages
 
 
 def test_clean_text_joins_lines_into_paragraphs():
@@ -51,3 +51,49 @@ def test_load_document_for_pdf_sample_if_present():
     assert isinstance(loaded_text, str)
     assert loaded_text
     assert "FastAPI" in loaded_text
+
+
+def test_load_document_pages_for_txt_file(tmp_path: Path):
+    txt_path = tmp_path / "sample.txt"
+    txt_path.write_text(
+        "This is   a\nsimple   text file.\n\nSecond paragraph.",
+        encoding="utf-8",
+    )
+
+    pages = load_document_pages(str(txt_path))
+
+    assert len(pages) == 1
+    page_num, text = pages[0]
+    assert page_num == 1
+    assert "This is a simple text file." in text
+    assert "Second paragraph." in text
+    assert "  " not in text
+
+
+def test_load_document_pages_for_empty_txt_returns_empty_list(tmp_path: Path):
+    txt_path = tmp_path / "empty.txt"
+    txt_path.write_text("", encoding="utf-8")
+
+    pages = load_document_pages(str(txt_path))
+
+    assert pages == []
+
+
+def test_load_document_pages_for_pdf_sample_if_present():
+    project_tests_dir = Path(__file__).parents[1]  # .../tests
+    pdf_path = project_tests_dir / "data" / "test_fastapi_multipage.pdf"
+
+    if not pdf_path.exists():
+        pytest.skip("Sample PDF not found at tests/data/test_fastapi_multipage.pdf")
+
+    pages = load_document_pages(str(pdf_path))
+
+    assert isinstance(pages, list)
+    assert len(pages) >= 2
+
+    first_page_num, first_page_text = pages[0]
+    assert first_page_num == 1
+    assert isinstance(first_page_text, str)
+    assert first_page_text.strip() != ""
+
+    assert any("FastAPI" in text for _, text in pages)

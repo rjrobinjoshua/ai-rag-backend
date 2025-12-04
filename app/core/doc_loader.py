@@ -1,6 +1,6 @@
 import os
 import re
-from typing import Literal
+from typing import List, Literal, Tuple
 
 from pypdf import PdfReader
 
@@ -86,3 +86,45 @@ def load_document(
         raise ValueError(f"Unsupported file_type: {file_type}")
 
     return clean_text(raw)
+
+
+def load_document_pages(
+    file_path: str, *, file_type: Literal["auto", "txt", "pdf"] = "auto"
+) -> List[Tuple[int, str]]:
+    """
+    Load a document and return a list of (page_number, cleaned_text).
+
+    - For PDF: one entry per real page (1-based), cleaned with clean_text().
+    - For TXT: single tuple (1, cleaned_text).
+    """
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"File not found: {file_path}")
+
+    ext = os.path.splitext(file_path)[1].lower()
+
+    if file_type == "auto":
+        if ext == ".txt":
+            file_type = "txt"
+        elif ext == ".pdf":
+            file_type = "pdf"
+        else:
+            raise ValueError(f"Unsupported file extension: {ext}")
+
+    if file_type == "txt":
+        raw = _load_txt(file_path)
+        cleaned = clean_text(raw)
+        if not cleaned.strip():
+            return []
+        return [(1, cleaned)]
+
+    if file_type == "pdf":
+        reader = PdfReader(file_path)
+        pages: List[Tuple[int, str]] = []
+        for idx, page in enumerate(reader.pages):
+            raw_text = page.extract_text() or ""
+            cleaned = clean_text(raw_text)
+            if cleaned.strip():
+                pages.append((idx + 1, cleaned))
+        return pages
+
+    raise ValueError(f"Unsupported file_type: {file_type}")
