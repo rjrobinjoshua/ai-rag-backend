@@ -5,6 +5,12 @@ from app.models.chunk import ChunkMetadata, TextChunk
 from app.services import openai_service
 
 
+def _to_chunk_metadata(raw_meta) -> ChunkMetadata:
+    if isinstance(raw_meta, ChunkMetadata):
+        return raw_meta
+    return ChunkMetadata(**raw_meta)
+
+
 async def search_chunks(
     query: str, collection_name: str = "docs", k: int = 3
 ) -> List[TextChunk]:
@@ -29,7 +35,7 @@ async def search_chunks(
             id=id_,
             text=doc,
             score=float(dist),
-            metadata=ChunkMetadata(**meta) or ChunkMetadata(),
+            metadata=_to_chunk_metadata(meta) or ChunkMetadata(),
         )
         chunks.append(text_chunk)
 

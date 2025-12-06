@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from pydantic import BaseModel, Field
 
@@ -19,4 +19,5 @@ class RagSource(BaseModel):
 
 class RagAnswer(BaseModel):
     answer: str
+    summary: Optional[str] = None
     sources: List[RagSource]
