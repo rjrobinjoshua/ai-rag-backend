@@ -1,3 +1,5 @@
+from typing import Any
+
 from fastapi.testclient import TestClient
 
 from app.main import app
@@ -9,7 +11,9 @@ client = TestClient(app)
 def test_rag_query_basic(monkeypatch):
     # mock search_chunks
 
-    async def fake_search_chunks(query: str, k: int = 4):
+    async def fake_search_chunks(
+        query: str, filename: str, metadata_filter: dict[str, Any], k: int = 4
+    ):
         return [
             TextChunk(
                 id="doc1",

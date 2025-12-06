@@ -8,7 +8,9 @@ router = APIRouter(tags=["rag"])
 
 @router.post("/rag-query", response_model=RagAnswer)
 async def rag_query(request: RagRequest) -> RagAnswer:
-    rag_answer = await rag_service.rag_with_answer(
-        question=request.question, top_k=request.top_k
+    return await rag_service.rag_with_answer(
+        question=request.question,
+        top_k=request.top_k,
+        filename=request.filename,
+        metadata_filter=request.filters,
     )
-    return rag_answer

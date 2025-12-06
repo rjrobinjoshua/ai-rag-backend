@@ -1,4 +1,4 @@
-from typing import Optional, Tuple
+from typing import Any, Optional, Tuple
 
 from app.core import rag, retrieval
 from app.models.rag import RagAnswer, RagSource
@@ -26,8 +26,15 @@ def _parse_answer_and_summary(raw: str) -> Tuple[str, Optional[str]]:
     return answer_part, summary_part
 
 
-async def rag_with_answer(question: str, top_k: int) -> RagAnswer:
-    chunks = await retrieval.search_chunks(query=question, k=top_k)
+async def rag_with_answer(
+    question: str,
+    top_k: int,
+    filename: Optional[str] = None,
+    metadata_filter: Optional[dict[str, Any]] = None,
+) -> RagAnswer:
+    chunks = await retrieval.search_chunks(
+        query=question, k=top_k, filename=filename, metadata_filter=metadata_filter
+    )
     if not chunks:
         return RagAnswer(
             answer="I couldn't find any relevant context to answer this question.",
