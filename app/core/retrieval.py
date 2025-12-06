@@ -1,7 +1,7 @@
 from typing import List
 
 from app.core import chroma_client
-from app.models.chunk import TextChunk
+from app.models.chunk import ChunkMetadata, TextChunk
 from app.services import openai_service
 
 
@@ -29,7 +29,7 @@ async def search_chunks(
             id=id_,
             text=doc,
             score=float(dist),
-            metadata=meta or {},
+            metadata=ChunkMetadata(**meta) or ChunkMetadata(),
         )
         chunks.append(text_chunk)
 

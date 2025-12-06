@@ -9,6 +9,7 @@ import chromadb
 
 from app.core.chunking import chunk_text, semantic_chunk_text_with_overlap
 from app.core.doc_loader import load_document_pages
+from app.models.chunk import ChunkMetadata
 from app.services.openai_service import embed_text
 
 CHROMA_DB_DIR = "chroma_db"
@@ -111,14 +112,13 @@ def build_chunks_for_file(
             chunk_id = f"{filename}-p{page_num}-c{local_idx}"
 
             documents.append(chunk)
-            metadatas.append(
-                {
-                    "source": str(path),
-                    "filename": filename,
-                    "page": page_num,
-                    "chunk_number": chunk_counter,
-                }
+            meta = ChunkMetadata(
+                source=str(path),
+                filename=filename,
+                page=page_num,
+                chunk_number=chunk_counter,
             )
+            metadatas.append(meta.model_dump)
             ids.append(chunk_id)
             chunk_counter += 1
 

@@ -1,7 +1,7 @@
 # tests/core/test_rag.py
 
 from app.core import rag
-from app.models.chunk import TextChunk
+from app.models.chunk import ChunkMetadata, TextChunk
 
 
 def test_build_context_single_chunk():
@@ -10,7 +10,7 @@ def test_build_context_single_chunk():
             id="c1",
             text="  FastAPI is awesome.  ",
             score=0.1,
-            metadata={"source": "docs.md"},
+            metadata=ChunkMetadata(source="docs.md", filename="docs.md"),
         )
     ]
 
@@ -24,8 +24,18 @@ def test_build_context_single_chunk():
 
 def test_build_context_multiple_chunks():
     chunks = [
-        TextChunk(id="c1", text="First chunk", score=0.1, metadata={}),
-        TextChunk(id="c2", text="Second chunk", score=0.2, metadata={}),
+        TextChunk(
+            id="c1",
+            text="First chunk",
+            score=0.1,
+            metadata=ChunkMetadata(source="docs.md", filename="docs.md"),
+        ),
+        TextChunk(
+            id="c2",
+            text="Second chunk",
+            score=0.2,
+            metadata=ChunkMetadata(source="docs.md", filename="docs.md"),
+        ),
     ]
 
     context = rag.build_context(chunks)

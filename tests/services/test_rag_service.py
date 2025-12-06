@@ -2,7 +2,7 @@
 
 import pytest
 
-from app.models.chunk import TextChunk
+from app.models.chunk import ChunkMetadata, TextChunk
 from app.models.rag import RagAnswer
 from app.services import rag_service
 
@@ -19,7 +19,7 @@ async def test_rag_with_answer_basic(monkeypatch):
                 text="FastAPI is a modern, fast (high-performance) web framework "
                 "for building APIs with Python.",
                 score=0.9,
-                metadata={"source": "docs.md"},
+                metadata=ChunkMetadata(source="docs.md", filename="docs.md"),
             )
         ]
 
@@ -53,7 +53,7 @@ async def test_rag_with_answer_basic(monkeypatch):
     assert src.id == "doc1"
     assert "FastAPI is a modern, fast (high-performance)" in src.text
     assert src.score == 0.9
-    assert src.metadata == {"source": "docs.md"}
+    assert src.metadata == ChunkMetadata(source="docs.md", filename="docs.md")
 
 
 @pytest.mark.asyncio

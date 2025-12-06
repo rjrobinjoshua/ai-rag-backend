@@ -1,7 +1,7 @@
 from fastapi.testclient import TestClient
 
 from app.main import app
-from app.models.chunk import TextChunk
+from app.models.chunk import ChunkMetadata, TextChunk
 
 client = TestClient(app)
 
@@ -16,7 +16,7 @@ def test_rag_query_basic(monkeypatch):
                 text="FastAPI is a modern, fast (high-performance) web framework for "
                 "building APIs with Python.",
                 score=0.9,
-                metadata={"source": "docs.md"},
+                metadata=ChunkMetadata(source="docs.md", filename="docs.md"),
             )
         ]
 

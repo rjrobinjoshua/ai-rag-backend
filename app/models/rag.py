@@ -1,6 +1,8 @@
-from typing import Any, Dict, List
+from typing import List
 
 from pydantic import BaseModel, Field
+
+from app.models.chunk import ChunkMetadata
 
 
 class RagRequest(BaseModel):
@@ -12,7 +14,7 @@ class RagSource(BaseModel):
     id: str = None
     text: str
     score: float
-    metadata: Dict[str, Any]
+    metadata: ChunkMetadata
 
 
 class RagAnswer(BaseModel):
