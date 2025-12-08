@@ -77,6 +77,8 @@ def build_chunks_for_file(
       - add metadata (filename, page, chunk_number)
       - build deterministic ids
     Returns (documents, metadatas, ids)
+
+    NOTE: metadatas MUST be plain dicts for Chroma.
     """
     filename = path.name
 
@@ -112,13 +114,17 @@ def build_chunks_for_file(
             chunk_id = f"{filename}-p{page_num}-c{local_idx}"
 
             documents.append(chunk)
+
             meta = ChunkMetadata(
                 source=str(path),
                 filename=filename,
                 page=page_num,
                 chunk_number=chunk_counter,
             )
-            metadatas.append(meta.model_dump)
+
+            # IMPORTANT: store as plain dict for Chroma
+            metadatas.append(meta.model_dump())
+
             ids.append(chunk_id)
             chunk_counter += 1
 
@@ -170,7 +176,7 @@ async def ingest_files(
             ids=ids,
             documents=chunks,
             embeddings=embeddings,
-            metadatas=metadatas,
+            metadatas=metadatas,  # list[dict] – OK for Chroma
         )
 
         print(
@@ -184,6 +190,8 @@ async def ingest_files(
     else:
         print(f"\n✅ Total ingested chunks: {total_chunks}")
 
+    return total_chunks
+
 
 # Backwards-compatible wrapper for old usage
 async def ingest_file(
@@ -194,7 +202,7 @@ async def ingest_file(
     reset: bool = False,
     mode: str = "fixed",
 ):
-    await ingest_files(
+    return await ingest_files(
         file_patterns=[file_path],
         collection_name=collection_name,
         chunk_size=chunk_size,
