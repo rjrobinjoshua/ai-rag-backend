@@ -2,16 +2,16 @@ from typing import List
 
 from fastapi import APIRouter, Query
 
-from app.models.admin import ReindexRequest
+from app.models.admin import DocumentInfo, ReindexRequest
 from app.scripts.ingest import ingest_files
-from app.services.documents_service import DocumentInfo, list_documents
+from app.services import documents_service
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 
 
 @router.get("/documents", response_model=List[DocumentInfo])
 def get_documents(collection: str = Query("docs")):
-    return list_documents(collection_name=collection)
+    return documents_service.list_documents(collection_name=collection)
 
 
 @router.post("/reindex")
