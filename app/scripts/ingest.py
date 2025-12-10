@@ -1,12 +1,12 @@
 import argparse
 import asyncio
 import glob
-import os
 from pathlib import Path
 from typing import List, Tuple
 
 import chromadb
 
+from app.core.chroma_client import get_chroma_client
 from app.core.chunking import chunk_text, semantic_chunk_text_with_overlap
 from app.core.doc_loader import load_document_pages
 from app.models.chunk import ChunkMetadata
@@ -14,12 +14,6 @@ from app.services.openai_service import embed_text
 
 CHROMA_DB_DIR = "chroma_db"
 DEFAULT_COLLECTION = "docs"
-
-
-def get_chroma_client(db_path: str = CHROMA_DB_DIR):
-    os.makedirs(db_path, exist_ok=True)
-    client = chromadb.PersistentClient(path=db_path)
-    return client
 
 
 def reset_collection(collection_name: str, client: chromadb.PersistentClient):
