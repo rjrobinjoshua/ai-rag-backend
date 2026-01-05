@@ -36,7 +36,7 @@ Part of a 10-week AI Engineering roadmap.
   Generates vector embeddings for RAG workflows.
 
 ### 📚 Retrieval-Augmented Generation (RAG)
-- **Ingestion pipeline (`scripts/ingest.py`)**
+- **Ingestion pipeline (`app/scripts/ingest.py`)**
   - Chunking
   - Embedding
   - Storing into ChromaDB
@@ -133,6 +133,54 @@ The server will start at:
 ```
 http://localhost:8000
 ```
+
+***
+
+## 🧰 Scripts
+
+Run scripts as modules from the repo root to ensure imports work:
+
+### Ingestion CLI (Typer)
+
+```bash
+python -m app.scripts.ingestion_cli ingest "data/*.pdf" --collection docs --chunk-size 200 --chunk-overlap 40 --mode fixed --reset
+```
+
+```bash
+python -m app.scripts.ingestion_cli reindex "data/*.pdf" -c docs -m semantic
+```
+
+### Ingest (argparse)
+
+```bash
+python -m app.scripts.ingest --file data/sample.pdf
+```
+
+```bash
+python -m app.scripts.ingest --paths "data/*.pdf" "data/*.txt" --collection docs --chunk-size 200 --chunk-overlap 40 --mode fixed
+```
+
+### Inspect chunking output
+
+```bash
+python -m app.scripts.inspect_chunks --file data/sample.pdf --mode semantic --chunk-size 300 --chunk-overlap 50
+```
+
+### Manual checks
+
+```bash
+python -m app.scripts.manual_retrieval_check
+```
+
+```bash
+python -m app.scripts.manual_openai
+```
+
+```bash
+python -m app.scripts.manual_openai_streaming
+```
+
+Note: ingestion and manual OpenAI scripts require `OPENAI_API_KEY` in `.env`.
 
 ***
 
