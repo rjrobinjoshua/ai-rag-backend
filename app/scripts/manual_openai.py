@@ -1,22 +1,16 @@
-import os
-
-from dotenv import load_dotenv
 from openai import OpenAI
+
+from app.core.config import get_settings
 
 user_prompt = "Hello Open AI, what is your model name?"
 
 
 def main():
-    load_dotenv()
-
-    api_key = os.getenv("OPENAI_API_KEY")
-    if not api_key:
-        raise RuntimeError("OPENAI_API_KEY not found in the environment")
-
-    client = OpenAI(api_key=api_key)
+    settings = get_settings()
+    client = OpenAI(api_key=settings.openai_api_key)
 
     response = client.chat.completions.create(
-        model="gpt-4.1-mini",
+        model=settings.chatgpt_model,
         messages=[
             {"role": "system", "content": "You are a concise assitant"},
             {"role": "user", "content": user_prompt},

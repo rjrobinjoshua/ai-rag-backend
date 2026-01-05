@@ -2,8 +2,6 @@ from openai import OpenAI
 
 from app.core.config import get_settings
 
-EMBEDDING_MODEL = "text-embedding-3-small"
-
 settings = get_settings()
 client = OpenAI(api_key=settings.api_key)
 
@@ -22,7 +20,7 @@ async def ask_llm(user_prompt: str) -> str:
 
 
 async def embed_text(text: str) -> list[float]:
-    response = client.embeddings.create(model=EMBEDDING_MODEL, input=text)
+    response = client.embeddings.create(model=settings.openai_embed_model, input=text)
     return response.data[0].embedding
 
 
