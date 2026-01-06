@@ -48,7 +48,9 @@ def setup_middleware(app: FastAPI):
         else:
             log.error("request_failed")
 
-    def _is_streaming(response) -> bool:
+    def _is_streaming(response, request: Request) -> bool:
+        if getattr(request.state, "is_streaming", False):
+            return True
         return response is not None and isinstance(response, StreamingResponse)
 
     def _wrap_streaming_response(
@@ -88,13 +90,15 @@ def setup_middleware(app: FastAPI):
         start = time()
         response = None
         exc: Optional[BaseException] = None
+        defer_log = False
 
         try:
             response = await call_next(request)
             if response is not None:
                 response.headers["X-Request-Id"] = request_id
 
-            if _is_streaming(response):
+            if _is_streaming(response, request):
+                defer_log = True
                 _wrap_streaming_response(
                     response,
                     request=request,
@@ -145,16 +149,14 @@ def setup_middleware(app: FastAPI):
         finally:
             status_code = getattr(response, "status_code", 500)
 
-            if exc is None and _is_streaming(response):
-                return
-
             if response is not None:
                 response.headers["X-Request-Id"] = request_id
 
-            _log_request(
-                request,
-                request_id=request_id,
-                status_code=status_code,
-                start_time=start,
-                exc=exc,
-            )
+            if not (defer_log and exc is None):
+                _log_request(
+                    request,
+                    request_id=request_id,
+                    status_code=status_code,
+                    start_time=start,
+                    exc=exc,
+                )

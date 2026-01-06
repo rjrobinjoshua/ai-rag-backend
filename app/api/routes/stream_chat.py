@@ -9,6 +9,7 @@ router = APIRouter()
 
 @router.post("/stream-chat")
 async def stream_chat(http_request: Request, request: StreamChatRequest):
+    http_request.state.is_streaming = True
 
     async def event_generator():
         async for token in openai_service.stream_chat_llm(http_request, request.prompt):
