@@ -11,51 +11,97 @@ from starlette.responses import StreamingResponse
 
 
 def setup_middleware(app: FastAPI):
+    def _bind_log(
+        request: Request,
+        *,
+        request_id: str,
+        status_code: int,
+        duration_ms: float,
+    ):
+        return logger.bind(
+            request_id=request_id,
+            method=request.method,
+            path=request.url.path,
+            status_code=status_code,
+            duration_ms=duration_ms,
+            llm_calls=[c.model_dump() for c in request.state.llm_calls],
+        )
+
+    def _log_request(
+        request: Request,
+        *,
+        request_id: str,
+        status_code: int,
+        start_time: float,
+        exc: Optional[BaseException],
+    ) -> None:
+        duration_ms = (time() - start_time) * 1000
+        log = _bind_log(
+            request,
+            request_id=request_id,
+            status_code=status_code,
+            duration_ms=duration_ms,
+        )
+
+        if exc is None:
+            log.info("request_completed")
+        else:
+            log.error("request_failed")
+
+    def _is_streaming(response) -> bool:
+        return response is not None and isinstance(response, StreamingResponse)
+
+    def _wrap_streaming_response(
+        response: StreamingResponse,
+        *,
+        request: Request,
+        request_id: str,
+        start_time: float,
+    ) -> None:
+        original_iterator = response.body_iterator
+
+        async def _stream_and_log():
+            stream_exc: Optional[BaseException] = None
+            try:
+                async for chunk in original_iterator:
+                    yield chunk
+            except BaseException as exc:
+                stream_exc = exc
+                raise
+            finally:
+                _log_request(
+                    request,
+                    request_id=request_id,
+                    status_code=getattr(response, "status_code", 500),
+                    start_time=start_time,
+                    exc=stream_exc,
+                )
+
+        response.body_iterator = _stream_and_log()
+
     @app.middleware("http")
     async def log_requests(request: Request, call_next):
-        # -------------------------
-        # Correlation + LLM state
-        # -------------------------
         request_id: str = request.headers.get("x-request-id") or str(uuid.uuid4())
         request.state.request_id = request_id
-        request.state.llm_calls = []  # Step 3 will populate this
+        request.state.llm_calls = []
 
         start = time()
         response = None
         exc: Optional[BaseException] = None
-        defer_log = False
 
         try:
             response = await call_next(request)
             if response is not None:
                 response.headers["X-Request-Id"] = request_id
 
-            is_streaming = response is not None and (
-                isinstance(response, StreamingResponse)
-                or getattr(response, "body_iterator", None) is not None
-            )
+            if _is_streaming(response):
+                _wrap_streaming_response(
+                    response,
+                    request=request,
+                    request_id=request_id,
+                    start_time=start,
+                )
 
-            if is_streaming:
-                original_iterator = response.body_iterator
-                defer_log = True
-
-                async def _stream_and_log():
-                    try:
-                        async for chunk in original_iterator:
-                            yield chunk
-                    finally:
-                        process_time_ms = (time() - start) * 1000
-                        log = logger.bind(
-                            request_id=request_id,
-                            method=request.method,
-                            path=request.url.path,
-                            status_code=getattr(response, "status_code", 500),
-                            duration_ms=process_time_ms,
-                            llm_calls=[c.model_dump() for c in request.state.llm_calls],
-                        )
-                        log.info("request_completed")
-
-                response.body_iterator = _stream_and_log()
             return response
 
         except StarletteHTTPException as http_exc:
@@ -99,21 +145,16 @@ def setup_middleware(app: FastAPI):
         finally:
             status_code = getattr(response, "status_code", 500)
 
-            if not (defer_log and exc is None):
-                if response is not None:
-                    response.headers["X-Request-Id"] = request_id
+            if exc is None and _is_streaming(response):
+                return
 
-                process_time_ms = (time() - start) * 1000
-                log = logger.bind(
-                    request_id=request_id,
-                    method=request.method,
-                    path=request.url.path,
-                    status_code=status_code,
-                    duration_ms=process_time_ms,
-                    llm_calls=[c.model_dump() for c in request.state.llm_calls],
-                )
+            if response is not None:
+                response.headers["X-Request-Id"] = request_id
 
-                if exc is None:
-                    log.info("request_completed")
-                else:
-                    log.error("request_failed")
+            _log_request(
+                request,
+                request_id=request_id,
+                status_code=status_code,
+                start_time=start,
+                exc=exc,
+            )

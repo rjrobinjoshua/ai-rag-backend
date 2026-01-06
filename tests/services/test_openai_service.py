@@ -50,6 +50,11 @@ async def test_embed_text_uses_openai_client(mock_client):
 @patch("app.services.openai_service.client")
 async def test_stream_chat_llm(mock_client):
     # Fake streamed chunks
+    chunk0 = MagicMock()
+    chunk0.choices = []
+    chunk0.usage = MagicMock(prompt_tokens=2, completion_tokens=3, total_tokens=5)
+    chunk0.model = "gpt-4.1-mini-2025-04-14"
+
     chunk1 = MagicMock()
     chunk1.choices = [MagicMock(delta=MagicMock(content="Hello"))]
 
@@ -57,6 +62,7 @@ async def test_stream_chat_llm(mock_client):
     chunk2.choices = [MagicMock(delta=MagicMock(content=" world"))]
 
     async def fake_stream():
+        yield chunk0
         yield chunk1
         yield chunk2
 
@@ -68,3 +74,6 @@ async def test_stream_chat_llm(mock_client):
 
     assert result == ["Hello", " world"]
     mock_client.chat.completions.create.assert_called_once()
+    kwargs = mock_client.chat.completions.create.call_args.kwargs
+    assert kwargs["stream"] is True
+    assert kwargs["stream_options"] == {"include_usage": True}
