@@ -1,4 +1,4 @@
-from unittest.mock import MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -15,9 +15,9 @@ async def test_ask_llm_uses_openai_client(mock_client):
     fake_response = MagicMock()
     fake_response.choices = [fake_choice]
 
-    mock_client.chat.completions.create.return_value = fake_response
+    mock_client.chat.completions.create = AsyncMock(return_value=fake_response)
 
-    result = await ask_llm("Hello")
+    result = await ask_llm(None, "Hello")
     assert result == "Test reply"
 
     mock_client.chat.completions.create.assert_called_once()
@@ -36,9 +36,9 @@ async def test_embed_text_uses_openai_client(mock_client):
     fake_response = MagicMock()
     fake_response.data = [fake_data_item]
 
-    mock_client.embeddings.create.return_value = fake_response
+    mock_client.embeddings.create = AsyncMock(return_value=fake_response)
 
-    result = await embed_text("hello world")
+    result = await embed_text(None, "hello world")
     assert result == fake_embedding
 
     mock_client.embeddings.create.assert_called_once()
@@ -56,11 +56,14 @@ async def test_stream_chat_llm(mock_client):
     chunk2 = MagicMock()
     chunk2.choices = [MagicMock(delta=MagicMock(content=" world"))]
 
-    # Make the mock client iterable (stream=True)
-    mock_client.chat.completions.create.return_value = iter([chunk1, chunk2])
+    async def fake_stream():
+        yield chunk1
+        yield chunk2
+
+    mock_client.chat.completions.create = AsyncMock(return_value=fake_stream())
 
     result = []
-    async for token in stream_chat_llm("hi"):
+    async for token in stream_chat_llm(None, "hi"):
         result.append(token)
 
     assert result == ["Hello", " world"]

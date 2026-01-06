@@ -27,7 +27,7 @@ def reset_collection(collection_name: str, client: chromadb.PersistentClient):
 async def embed_chunks(chunks: List[str]) -> List[List[float]]:
     embeddings = []
     for chunk in chunks:
-        vec = await embed_text(chunk)
+        vec = await embed_text(None, chunk)
         embeddings.append(vec)
     return embeddings
 

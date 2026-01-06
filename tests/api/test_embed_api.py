@@ -6,7 +6,7 @@ client = TestClient(app)
 
 
 def test_embed_endpoint(monkeypatch):
-    async def mock_embed_text(text: str):
+    async def mock_embed_text(_request, text: str):
         assert text == "hello"
         return [0.1, 0.2, 0.3]
 

@@ -1,5 +1,7 @@
 from typing import Any, Dict, List, Optional
 
+from fastapi import Request
+
 from app.core import chroma_client
 from app.core.config import get_settings
 from app.models.chunk import ChunkMetadata, TextChunk
@@ -49,13 +51,14 @@ def _build_where(
 
 
 async def search_chunks(
+    http_request: Optional[Request],
     query: str,
     collection_name: str = "docs",
     k: int = settings.default_top_k,
     filename: Optional[str] = None,
     metadata_filter: Optional[dict[str, Any]] = None,
 ) -> List[TextChunk]:
-    given_embedding = await openai_service.embed_text(query)
+    given_embedding = await openai_service.embed_text(http_request, query)
 
     client = chroma_client.get_chroma_client()
     collection = client.get_or_create_collection(name=collection_name)

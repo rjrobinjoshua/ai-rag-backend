@@ -53,12 +53,13 @@ async def test_search_chunks_without_filters_uses_where_none(monkeypatch):
     # Mock embed_text
     from app.services import openai_service
 
-    async def fake_embed_text(query: str):
+    async def fake_embed_text(_request, query: str):
         return [0.1, 0.2, 0.3]
 
     monkeypatch.setattr(openai_service, "embed_text", fake_embed_text)
 
     chunks = await retrieval.search_chunks(
+        http_request=None,
         query="what is fast api",
         k=3,
         filename=None,
@@ -83,12 +84,13 @@ async def test_search_chunks_with_filename_builds_filename_where(monkeypatch):
 
     from app.services import openai_service
 
-    async def fake_embed_text(query: str):
+    async def fake_embed_text(_request, query: str):
         return [0.1, 0.2, 0.3]
 
     monkeypatch.setattr(openai_service, "embed_text", fake_embed_text)
 
     await retrieval.search_chunks(
+        http_request=None,
         query="what is fast api",
         k=3,
         filename="resume.pdf",
@@ -109,12 +111,13 @@ async def test_search_chunks_with_combined_filters_uses_and(monkeypatch):
 
     from app.services import openai_service
 
-    async def fake_embed_text(query: str):
+    async def fake_embed_text(_request, query: str):
         return [0.1, 0.2, 0.3]
 
     monkeypatch.setattr(openai_service, "embed_text", fake_embed_text)
 
     chunks = await retrieval.search_chunks(
+        http_request=None,
         query="what is fast api",
         k=3,
         filename=None,

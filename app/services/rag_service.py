@@ -1,5 +1,7 @@
 from typing import Any, Optional, Tuple
 
+from fastapi import Request
+
 from app.core import rag, retrieval
 from app.models.rag import RagAnswer, RagSource
 from app.services import openai_service
@@ -27,13 +29,18 @@ def _parse_answer_and_summary(raw: str) -> Tuple[str, Optional[str]]:
 
 
 async def rag_with_answer(
+    http_request: Request,
     question: str,
     top_k: int,
     filename: Optional[str] = None,
     metadata_filter: Optional[dict[str, Any]] = None,
 ) -> RagAnswer:
     chunks = await retrieval.search_chunks(
-        query=question, k=top_k, filename=filename, metadata_filter=metadata_filter
+        http_request=http_request,
+        query=question,
+        k=top_k,
+        filename=filename,
+        metadata_filter=metadata_filter,
     )
     if not chunks:
         return RagAnswer(
@@ -44,8 +51,7 @@ async def rag_with_answer(
 
     context = rag.build_context(chunks)
     rag_prompt = rag.build_rag_prompt(context=context, question=question)
-    print(rag_prompt)
-    raw_output = await openai_service.ask_llm(rag_prompt)
+    raw_output = await openai_service.ask_llm(http_request, rag_prompt)
 
     answer, summary = _parse_answer_and_summary(raw_output)
 

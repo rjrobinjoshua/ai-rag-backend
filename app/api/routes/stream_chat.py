@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 from fastapi.responses import StreamingResponse
 
 from app.models.stream_chat import StreamChatRequest
@@ -8,10 +8,10 @@ router = APIRouter()
 
 
 @router.post("/stream-chat")
-async def stream_chat(request: StreamChatRequest):
+async def stream_chat(http_request: Request, request: StreamChatRequest):
 
     async def event_generator():
-        async for token in openai_service.stream_chat_llm(request.prompt):
+        async for token in openai_service.stream_chat_llm(http_request, request.prompt):
             yield token
 
     return StreamingResponse(event_generator(), media_type="text/plain")

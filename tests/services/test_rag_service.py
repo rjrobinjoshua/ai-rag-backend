@@ -9,6 +9,7 @@ from app.services import rag_service
 async def test_rag_with_answer_basic(monkeypatch):
     # Fake retrieval: returns one chunk
     async def fake_search_chunks(
+        http_request,
         query: str,
         collection_name: str = "docs",
         k: int = 3,
@@ -29,7 +30,7 @@ async def test_rag_with_answer_basic(monkeypatch):
             )
         ]
 
-    async def fake_ask_llm(prompt: str) -> str:
+    async def fake_ask_llm(_request, prompt: str) -> str:
         # Prompt should contain context + question + markers
         assert "FastAPI is a modern, fast (high-performance)" in prompt
         assert "Question:" in prompt
@@ -54,7 +55,7 @@ async def test_rag_with_answer_basic(monkeypatch):
 
     # Call the service
     result: RagAnswer = await rag_service.rag_with_answer(
-        question="What is FastAPI?", top_k=3
+        http_request=None, question="What is FastAPI?", top_k=3
     )
 
     # Validate result
@@ -76,6 +77,7 @@ async def test_rag_with_answer_basic(monkeypatch):
 async def test_rag_with_answer_no_chunks(monkeypatch):
     # Fake retrieval: returns no chunks
     async def fake_search_chunks(
+        http_request,
         query: str,
         collection_name: str = "docs",
         k: int = 3,
@@ -84,7 +86,7 @@ async def test_rag_with_answer_no_chunks(monkeypatch):
     ):
         return []
 
-    async def fake_ask_llm(prompt: str) -> str:
+    async def fake_ask_llm(_request, prompt: str) -> str:
         raise AssertionError("ask_llm should not be called when no chunks are found")
 
     from app.core import retrieval
@@ -93,7 +95,9 @@ async def test_rag_with_answer_no_chunks(monkeypatch):
     monkeypatch.setattr(retrieval, "search_chunks", fake_search_chunks)
     monkeypatch.setattr(openai_service, "ask_llm", fake_ask_llm)
 
-    result: RagAnswer = await rag_service.rag_with_answer(question="Something", top_k=3)
+    result: RagAnswer = await rag_service.rag_with_answer(
+        http_request=None, question="Something", top_k=3
+    )
 
     assert isinstance(result, RagAnswer)
     assert (

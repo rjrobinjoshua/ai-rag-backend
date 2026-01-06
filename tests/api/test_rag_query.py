@@ -12,7 +12,11 @@ def test_rag_query_basic(monkeypatch):
     # mock search_chunks
 
     async def fake_search_chunks(
-        query: str, filename: str, metadata_filter: dict[str, Any], k: int = 4
+        http_request,
+        query: str,
+        filename: str,
+        metadata_filter: dict[str, Any],
+        k: int = 4,
     ):
         return [
             TextChunk(
@@ -25,7 +29,7 @@ def test_rag_query_basic(monkeypatch):
         ]
 
     # mock chat_completion
-    async def fake_chat_completion(prompt: str) -> str:
+    async def fake_chat_completion(_request, prompt: str) -> str:
         assert "FastAPI" in prompt
         assert "Question:" in prompt
         return (

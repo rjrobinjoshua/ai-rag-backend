@@ -6,7 +6,7 @@ client = TestClient(app)
 
 
 def test_stream_chat_endpoint(monkeypatch):
-    async def fake_stream(prompt: str):
+    async def fake_stream(_request, prompt: str):
         yield "Hello"
         yield " world"
 

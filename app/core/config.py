@@ -43,7 +43,7 @@ class Settings(BaseSettings):
     # Local dev convenience ONLY
     # -------------------------
     model_config = SettingsConfigDict(
-        env_file=(".env", ".env.prod"),  # used only when running locally
+        env_file=(".env"),  # used only when running locally
         extra="ignore",
     )
 

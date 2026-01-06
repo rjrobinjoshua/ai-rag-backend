@@ -6,7 +6,7 @@ client = TestClient(app)
 
 
 def test_ask_endpoint(monkeypatch):
-    async def mock_ask_llm(user_prompt: str) -> str:
+    async def mock_ask_llm(_request, user_prompt: str) -> str:
         assert user_prompt == "Hello"
         return "Mocked answer"
 

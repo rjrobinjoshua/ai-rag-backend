@@ -15,3 +15,6 @@ chroma_db/
 
 #test files
 *_Ignore.pdf
+
+#logs
+/logs

@@ -5,7 +5,7 @@ from app.core.retrieval import search_chunks
 
 async def main():
     query = "What is this document about?"
-    chunks = await search_chunks(query=query, k=3)
+    chunks = await search_chunks(http_request=None, query=query, k=3)
 
     print("\nTop Chunks:")
     for idx, c in enumerate(chunks):
